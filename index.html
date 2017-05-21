@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html ng-app="chatApp">
   <head>
     <title>Socket.IO chat</title>
     <style>
@@ -13,25 +13,41 @@
       #messages li:nth-child(odd) { background: #eee; }
     </style>
   </head>
-  <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+  <body ng-controller="ChatController as vm">
+    <ul id="messages">
+        <li ng-repeat="chat in vm.messages track by $index">{{chat}}</li>
+    </ul>
+    <form ng-submit="vm.send()">
+      <input id="m" autocomplete="off" ng-model="vm.message" /><button>Send</button>
     </form>
+  </body>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-resource.min.js"></script>
     <script>
-    $(function(){
+    // $(function(){
       var socket = io();
-      $('form').submit(function(){
-          socket.emit('chat message', $('#m').val())
-          $('#m').val('')
-          return false;
-      })
-      socket.on('chat message', function(msg) {
-          $('ul#messages').append(`<li>${msg}</li>`)
-      })
-    })
+        angular
+        .module("chatApp", [])
+        .controller("ChatController",
+            ["$scope",
+            ChatControllerFunction]
+        )
+        function ChatControllerFunction($scope){
+            let self = this;
+            this.messages = [];
+            socket.on('chat message', function(msg) {
+                self.messages.push(msg)
+                $scope.$apply()
+                // $('ul#messages').append(`<li>${msg}</li>`)
+            })
+            self.send = function(){
+                socket.emit('chat message', self.message)
+                self.message = ""
+                // return false;
+            }
+        }
+    // })
     </script>
-  </body>
 </html>
