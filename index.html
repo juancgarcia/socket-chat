@@ -37,6 +37,10 @@
         function ChatControllerFunction($scope){
             let self = this;
             this.messages = [];
+            socket.on('chat history', function(msg_list) {
+                self.messages = msg_list
+                $scope.$apply()
+            })
             socket.on('chat message', function(msg) {
                 self.messages.push(msg)
                 $scope.$apply()

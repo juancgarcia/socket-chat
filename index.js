@@ -11,12 +11,16 @@ app.get('/', (req, res)=>{
     res.sendFile(__dirname + '/index.html')
 })
 
+var messages = []
+
 io.on('connection', socket=>{
+  socket.emit('chat history', messages)
   console.log('a user connected');
   socket.on('disconnect', ()=>{
       console.log('user disconnected')
   })
   socket.on('chat message', (message)=>{
+    messages.push(message)
     io.emit('chat message', message)
     // socket.broadcast.emit('chat message', message)
     console.log(`chat message: ${message}`)
