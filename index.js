@@ -6,10 +6,12 @@ const io = require('socket.io')(http);
 
 app.set('port', process.env.PORT || 3001)
 
-app.get('/', (req, res)=>{
-    // res.send('hello!')
-    res.sendFile(__dirname + '/index.html')
-})
+app.use('/', express.static('./'))
+
+// app.get('/', (req, res)=>{
+//     // res.send('hello!')
+//     res.sendFile(__dirname + '/index.html')
+// })
 
 var messages = []
 
